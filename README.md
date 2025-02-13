@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📸 Photo Gallery App
 
-## Getting Started
+A modern, responsive photo gallery application built with Next.js and TypeScript that allows users to upload and view photos with their metadata.
 
-First, run the development server:
+![Photo Gallery App Preview](./public/preview.png)
 
+## ✨ Features
+
+- 🖼️ Modern and minimal design with a beautiful color palette
+- 📤 Drag and drop file upload
+- 📊 Display detailed photo information:
+  - 📷 Camera model
+  - 📅 Upload date
+  - 📐 Image dimensions
+  - ⚙️ Camera settings (exposure time, f-number, ISO)
+  - 📍 Location data
+- 🎯 EXIF data extraction
+- 🗑️ Easy photo deletion
+- 📱 Fully responsive design
+- 🌊 Aesthetic wave animation
+- 🎨 Custom color scheme:
+  - Background: `#222831`
+  - Cards: `#31363F`
+  - Accents: `#76ABAE`
+  - Text: `#EEEEEE`
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (version 14 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/photo-gallery.git
+cd photo-gallery
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 💻 Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. 📤 **Upload Photos**:
+   - Click the upload area or drag and drop photos
+   - Supports JPEG, PNG, and GIF formats
 
-## Learn More
+2. 👀 **View Photos**:
+   - Photos are displayed in a responsive grid
+   - Hover over photos to see additional options
 
-To learn more about Next.js, take a look at the following resources:
+3. 🗑️ **Delete Photos**:
+   - Hover over a photo and click the delete icon
+   - Photo will be removed instantly
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Built With
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Programming language
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [React Dropzone](https://react-dropzone.js.org/) - File upload
+- [EXIF-js](https://github.com/exif-js/exif-js) - EXIF data extraction
+- [date-fns](https://date-fns.org/) - Date formatting
+- [Heroicons](https://heroicons.com/) - Icons
 
-## Deploy on Vercel
+## 📝 Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+photo-gallery/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx      # Main gallery component
+│   │   ├── layout.tsx    # App layout
+│   │   └── globals.css   # Global styles
+│   └── components/       # React components
+├── public/              # Static files
+└── package.json        # Dependencies
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Color Scheme
+
+The application uses a carefully selected color palette:
+
+- `#222831` - Dark background providing excellent contrast
+- `#31363F` - Subtle card backgrounds
+- `#76ABAE` - Accent color for interactive elements
+- `#EEEEEE` - Light text for readability
+
+## 🔜 Future Enhancements
+
+- 🔍 Search and filter functionality
+- 📂 Album organization
+- 🔄 Batch upload and delete
+- 🌍 Geolocation mapping
+- 💾 Cloud storage integration
+- 🔒 User authentication
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📞 Contact
+
+Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
+
+Project Link: [https://github.com/yourusername/photo-gallery](https://github.com/yourusername/photo-gallery)

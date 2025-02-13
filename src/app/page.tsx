@@ -1,101 +1,181 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { format } from 'date-fns';
+import { PhotoIcon, XCircleIcon, CameraIcon } from '@heroicons/react/24/outline';
+import EXIF from 'exif-js';
+
+interface PhotoDetails {
+  id: string;
+  file: File;
+  preview: string;
+  name: string;
+  uploadDate: Date;
+  location?: string;
+  camera?: string;
+  dimensions?: string;
+  exposureTime?: string;
+  fNumber?: string;
+  iso?: string;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [photos, setPhotos] = useState<PhotoDetails[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const getExifData = (file: File): Promise<Partial<PhotoDetails>> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const exifData: any = {};
+        
+        EXIF.getData(file as any, function(this: any) {
+          const exif = EXIF.getAllTags(this);
+          if (exif) {
+            exifData.camera = `${exif.Make || ''} ${exif.Model || ''}`.trim() || 'Unknown Camera';
+            if (exif.ExposureTime) {
+              exifData.exposureTime = `1/${1 / exif.ExposureTime}s`;
+            }
+            if (exif.FNumber) {
+              exifData.fNumber = `f/${exif.FNumber}`;
+            }
+            if (exif.ISOSpeedRatings) {
+              exifData.iso = `ISO ${exif.ISOSpeedRatings}`;
+            }
+          }
+        });
+
+        // Create an image to get dimensions
+        const img = new Image();
+        img.onload = function() {
+          exifData.dimensions = `${img.width} × ${img.height}`;
+          resolve(exifData);
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    acceptedFiles.forEach(async (file) => {
+      const reader = new FileReader();
+      const exifData = await getExifData(file);
+      
+      reader.onload = () => {
+        setPhotos((prevPhotos) => [
+          ...prevPhotos,
+          {
+            id: Math.random().toString(36).substring(7),
+            file,
+            preview: reader.result as string,
+            name: file.name,
+            uploadDate: new Date(),
+            location: 'Unknown Location',
+            ...exifData
+          },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
+  }, []);
+
+  const deletePhoto = (id: string) => {
+    setPhotos((prevPhotos) => prevPhotos.filter(photo => photo.id !== id));
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif']
+    }
+  });
+
+  return (
+    <main className="min-h-screen p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold mb-8 text-center">📸 Photo Gallery</h1>
+        
+        <div {...getRootProps()} className={`card mb-8 p-8 text-center cursor-pointer border-2 border-dashed border-[#76ABAE] transition-colors ${isDragActive ? 'border-white' : ''}`}>
+          <input {...getInputProps()} />
+          <PhotoIcon className="w-12 h-12 mx-auto mb-4 text-[#76ABAE]" />
+          {isDragActive ? (
+            <p>Drop the files here ...</p>
+          ) : (
+            <p>Drag & drop photos here, or click to select files</p>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {photos.map((photo) => (
+            <div key={photo.id} className="card group relative">
+              <button
+                onClick={() => deletePhoto(photo.id)}
+                className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                aria-label="Delete photo"
+              >
+                <XCircleIcon className="w-8 h-8 text-red-500 hover:text-red-600 transition-colors" />
+              </button>
+              <div className="aspect-square mb-4 overflow-hidden rounded-lg">
+                <img
+                  src={photo.preview}
+                  alt={photo.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-accent">📁</span>
+                  <h3 className="font-bold truncate text-[#76ABAE]">{photo.name}</h3>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <span>📷</span>
+                  <span className="font-semibold">{photo.camera}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span>📅</span>
+                  <span className="font-semibold">
+                    {format(photo.uploadDate, 'PPP')}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span>📐</span>
+                  <span className="font-semibold">{photo.dimensions}</span>
+                </div>
+
+                {(photo.exposureTime || photo.fNumber || photo.iso) && (
+                  <div className="flex items-center gap-2">
+                    <span>⚙️</span>
+                    <p className="font-semibold space-x-2">
+                      {photo.exposureTime && <span>{photo.exposureTime}</span>}
+                      {photo.fNumber && <span>{photo.fNumber}</span>}
+                      {photo.iso && <span>{photo.iso}</span>}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <span>📍</span>
+                  <span className="font-semibold">{photo.location}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="wave-container">
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'>
+          <path
+            fill='#76ABAE'
+            fillOpacity='0.2'
+            d='M0,192L120,202.7C240,213,480,235,720,213.3C960,192,1200,128,1320,96L1440,64L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z'
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </svg>
+      </div>
+    </main>
   );
 }
