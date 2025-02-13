@@ -35,7 +35,7 @@ A modern, responsive photo gallery application built with Next.js and TypeScript
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/photo-gallery.git
+git clone https://github.com/emregncc7/photo-gallery.git
 cd photo-gallery
 ```
 
@@ -125,8 +125,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📞 Contact
+## 📞 İletişim
 
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
-
-Project Link: [https://github.com/yourusername/photo-gallery](https://github.com/yourusername/photo-gallery)
+📌 **GitHub**: [https://github.com/emregncc7](https://github.com/emregncc7)  
+📌 **LinkedIn**: [https://linkedin.com/emregncc7](https://www.linkedin.com/in/emregenc7/)
